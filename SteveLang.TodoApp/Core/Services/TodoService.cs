@@ -14,17 +14,6 @@ public class TodoService : ITodoService
         _context = context;
     }
 
-    public async Task Add(TodoItemDto dto)
-    {
-        _context.Add(new TodoItem
-        {
-            Id = Guid.NewGuid(),
-            Description = dto.Description
-        });
-
-        await _context.SaveChangesAsync();
-    }
-
     public async Task<List<TodoItemDto>> GetAll()
     {
         return await _context.TodoItems
@@ -38,14 +27,44 @@ public class TodoService : ITodoService
             .ToListAsync();
     }
 
-    public async Task Update(TodoItemDto todoItemDto)
+    public async Task<TodoItemDto?> GetById(Guid id)
     {
-        var todoItem = await _context.TodoItems.FindAsync(todoItemDto.Id);
+        var todoItem = await _context.TodoItems.FindAsync(id);
+        if (todoItem == null)
+        {
+            return null;
+        }
+        return new TodoItemDto
+        {
+            Id = todoItem.Id,
+            Description = todoItem.Description,
+            IsCompleted = todoItem.IsCompleted
+        };
+    }
 
-        if (todoItem == null) return;
+    public async Task Update(TodoItemDto dto)
+    {
+        if (dto == null) return;
 
-        todoItem.Description = todoItemDto.Description;
-        todoItem.IsCompleted = todoItemDto.IsCompleted;
+        if (dto.Id == Guid.Empty)
+        {
+            var newTodoItem = new TodoItem
+            {
+                Id = Guid.NewGuid(),
+                Description = dto.Description,
+                IsCompleted = dto.IsCompleted
+            };
+            await _context.AddAsync(newTodoItem);
+        }
+        else
+        {
+            var todoItem = await _context.TodoItems.FindAsync(dto.Id);
+
+            if (todoItem == null) return;
+
+            todoItem.Description = dto.Description;
+            todoItem.IsCompleted = dto.IsCompleted;
+        }
 
         await _context.SaveChangesAsync();
     }

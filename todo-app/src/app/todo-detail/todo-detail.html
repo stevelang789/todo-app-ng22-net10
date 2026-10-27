@@ -1,0 +1,19 @@
+<form (submit)="onSubmit($event)">
+  <mat-card appearance="outlined" class="w-100 m-4">
+    <mat-card-header>
+      <mat-card-title>Todo Detail</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="mt-4"> 
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <input matInput id="description" type="text" [formField]="todoForm.description">
+      </mat-form-field>
+      <div>
+        <mat-checkbox id="isCompleted" [formField]="todoForm.isCompleted">Completed</mat-checkbox>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button matButton="tonal" type="submit">Save</button>
+    </mat-card-actions>
+  </mat-card>
+</form>

@@ -5,6 +5,6 @@ namespace SteveLang.TodoApp.Services;
 public interface ITodoService
 {
     Task<List<TodoItemDto>> GetAll();
-    Task Add(TodoItemDto todoItemDto);
-    Task Update(TodoItemDto todoItemDto);
+    Task<TodoItemDto?> GetById(Guid id);
+    Task Update(TodoItemDto dto);
 }

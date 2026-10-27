@@ -21,10 +21,21 @@ public class TodoController : ControllerBase
         return await _todoService.GetAll();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Add([FromBody] TodoItemDto todoItemDto)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<TodoItemDto>> GetById(Guid id)
     {
-        await _todoService.Add(todoItemDto);
+        var todoItem = await _todoService.GetById(id);
+        if (todoItem == null)
+        {
+            return NotFound();
+        }
+        return Ok(todoItem);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Update([FromBody] TodoItemDto todoItemDto)
+    {
+        await _todoService.Update(todoItemDto);
         return Ok();
     }
 }
