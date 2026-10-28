@@ -28,6 +28,7 @@
 - The unit tests should contain much more test cases, e.g., negative and positive tests.
 - For a real app, I would add Playwright e2e tests to the front end using agentic AI. Boilerplate, repetitive code such as Playwright scripts is where AI really adds value. The developer would still need to come up with good test cases.
 - I'm using Guids for IDs but I like to get the best of both worlds by using `long` as the primary key and a `Guid` as the public identifier.
+- A real app would have form validation and user-friendly notifications in case of server error or if the connection is down.
 
 ## Getting it up and running
 
