@@ -33,6 +33,6 @@ export class TodoList {
   }
 
   add() {
-    this.router.navigate(['/todo', 'new']);
+    this.router.navigate(['/new-todo']);
   }
 }

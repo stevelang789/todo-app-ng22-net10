@@ -1,5 +1,5 @@
 import { Service } from '@angular/core';
-import { TodoItem } from './todoitem';
+import { TodoItem, CreateTodoItem } from './todoitem';
 
 @Service()
 export class TodoService {
@@ -16,41 +16,40 @@ export class TodoService {
   }
 
   async save(item: TodoItem): Promise<void> {
+    if (item.id) {
+      await this.update(item);
+    } else {
+      await this.create(item);
+    }
+  }
+
+  private async create(item: TodoItem): Promise<void> {
+    const createTodoItem: CreateTodoItem = {
+      description: item.description,
+      isCompleted: item.isCompleted
+    };
     const response = await fetch(this.url, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(createTodoItem)
+    });
+    if (!response.ok) {
+      throw new Error('Failed to create todo item');
+    }
+  }
+
+  private async update(item: TodoItem): Promise<void> {
+    const response = await fetch(this.url, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(item)
     });
     if (!response.ok) {
-      throw new Error('Failed to save todo item');
+      throw new Error('Failed to update todo item');
     }
   }
-
-  protected todoList: TodoItem[] = [
-    {
-      id: '1',
-      description: 'Sample todo item',
-      isCompleted: false
-    },
-    {
-      id: '2',
-      description: 'Another sample todo item',
-      isCompleted: false
-    },
-    {
-      id: '3',
-      description: 'Yet another sample todo item',
-      isCompleted: false
-    }
-  ];
-
-  getTodoList(): TodoItem[] {
-    return this.todoList;
-  }
-
-  // getById(id: string): TodoItem | undefined {
-  //     return this.todoList.find(item => item.id === id);
-  // }
 }

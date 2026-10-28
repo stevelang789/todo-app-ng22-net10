@@ -4,5 +4,6 @@ import { TodoDetail } from './todo-detail/todo-detail';
 
 export const routes: Routes = [
   { path: '', component: TodoList },
-  { path: 'todo/:id', component: TodoDetail }
+  { path: 'todo/:id', component: TodoDetail, data: { mode: 'edit' } },
+  { path: 'new-todo', component: TodoDetail, data: { mode: 'new' } }
 ];

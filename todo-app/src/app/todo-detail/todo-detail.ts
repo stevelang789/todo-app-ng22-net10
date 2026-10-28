@@ -26,22 +26,26 @@ export class TodoDetail {
     isCompleted: false
   });
   todoForm = form(this.todoModel);
+  isNew = false;
 
   constructor() {
-    const id = this.route.snapshot.params['id'];
-    console.log('Todo item ID:', id);
-    if (id === 'new') {
+    const mode = this.route.snapshot.data['mode'];
+    this.isNew = mode === 'new';
+    if (this.isNew) {
       this.todoItem = {
-        id: '00000000-0000-0000-0000-000000000000',
+        id: '',
         description: '',
         isCompleted: false
       };
     } else {
-      this.todoService.getById(id).then(item => {
-        this.todoItem = item;
-        this.todoForm.description().value.set(this.todoItem?.description ?? '');
-        this.todoForm.isCompleted().value.set(this.todoItem?.isCompleted ?? false);
-      });
+      const id = this.route.snapshot.params['id'];
+      if (id) {
+        this.todoService.getById(id).then(item => {
+          this.todoItem = item;
+          this.todoForm.description().value.set(this.todoItem?.description ?? '');
+          this.todoForm.isCompleted().value.set(this.todoItem?.isCompleted ?? false);
+        });
+      }
     }
   }
 
@@ -50,7 +54,6 @@ export class TodoDetail {
     if (this.todoItem) {
       this.todoItem.description = this.todoForm.description().value();
       this.todoItem.isCompleted = this.todoForm.isCompleted().value();
-      console.log('Saving todo item:', this.todoItem);
       await this.todoService.save(this.todoItem);
       this.router.navigate(['/']);
     }

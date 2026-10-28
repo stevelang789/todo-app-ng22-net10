@@ -18,7 +18,8 @@ namespace SteveLang.TodoApp.WebApi
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("http://localhost:4200")
+                                      policy
+                                        .AllowAnyOrigin()
                                         .AllowAnyHeader()
                                         .AllowAnyMethod();
                                   });

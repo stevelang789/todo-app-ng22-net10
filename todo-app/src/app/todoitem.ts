@@ -3,3 +3,8 @@ export interface TodoItem {
   description: string;
   isCompleted: boolean;
 }
+
+export interface CreateTodoItem {
+  description: string;
+  isCompleted: boolean;
+}

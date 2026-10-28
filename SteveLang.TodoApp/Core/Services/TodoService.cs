@@ -14,7 +14,7 @@ public class TodoService : ITodoService
         _context = context;
     }
 
-    public async Task<List<TodoItemDto>> GetAll()
+    public async Task<List<TodoItemDto>> GetAllAsync()
     {
         return await _context.TodoItems
             .OrderBy(x => x.DateCreatedUtc)
@@ -27,7 +27,7 @@ public class TodoService : ITodoService
             .ToListAsync();
     }
 
-    public async Task<TodoItemDto?> GetById(Guid id)
+    public async Task<TodoItemDto?> GetByIdAsync(Guid id)
     {
         var todoItem = await _context.TodoItems.FindAsync(id);
         if (todoItem == null)
@@ -42,30 +42,27 @@ public class TodoService : ITodoService
         };
     }
 
-    public async Task Update(TodoItemDto dto)
+    public async Task CreateAsync(CreateTodoItemDto dto)
     {
         if (dto == null) return;
-
-        if (dto.Id == Guid.Empty)
+        var todoItem = new TodoItem
         {
-            var newTodoItem = new TodoItem
-            {
-                Id = Guid.NewGuid(),
-                Description = dto.Description,
-                IsCompleted = dto.IsCompleted
-            };
-            await _context.AddAsync(newTodoItem);
-        }
-        else
-        {
-            var todoItem = await _context.TodoItems.FindAsync(dto.Id);
+            Id = Guid.NewGuid(),
+            Description = dto.Description,
+            IsCompleted = dto.IsCompleted,
+            DateCreatedUtc = DateTime.UtcNow
+        };
+        await _context.AddAsync(todoItem);
+        await _context.SaveChangesAsync();
+    }
 
-            if (todoItem == null) return;
-
-            todoItem.Description = dto.Description;
-            todoItem.IsCompleted = dto.IsCompleted;
-        }
-
+    public async Task UpdateAsync(TodoItemDto dto)
+    {
+        if (dto == null) return;
+        var todoItem = await _context.TodoItems.FindAsync(dto.Id);
+        if (todoItem == null) return;
+        todoItem.Description = dto.Description;
+        todoItem.IsCompleted = dto.IsCompleted;
         await _context.SaveChangesAsync();
     }
 }

@@ -6,12 +6,12 @@ using SteveLang.TodoApp.Persistence;
 using SteveLang.TodoApp.Services;
 using Xunit;
 
-namespace Tests;
+namespace SteveLang.TodoApp.Tests;
 
 public class TodoServiceTest
 {
     [Fact]
-    public async Task GetAll_ReturnsInAscendingOrderByDateCreatedUtc()
+    public async Task GetAllAsync_ReturnsInAscendingOrderByDateCreatedUtc()
     {
         // Arrange
         var todoDbContextMock = new Mock<TodoDbContext>();
@@ -23,7 +23,7 @@ public class TodoServiceTest
         todoDbContextMock.Setup(x => x.TodoItems).ReturnsDbSet(todoItems);
         var todoService = new TodoService(todoDbContextMock.Object);
         // Act
-        var result = await todoService.GetAll();
+        var result = await todoService.GetAllAsync();
         // Assert
         Assert.Equal(2, result.Count);
         Assert.Equal("Task 1", result[0].Description);
@@ -31,19 +31,19 @@ public class TodoServiceTest
     }
 
     [Fact]
-    public async Task Add_AddsNewTodoItem()
+    public async Task CreateAsync_AddsNewTodoItem()
     {
         // Arrange
         var todoDbContextMock = new Mock<TodoDbContext>();
         var todoService = new TodoService(todoDbContextMock.Object);
-        var newTodoItemDto = new TodoItemDto
+        var dto = new CreateTodoItemDto
         {
             Description = "New Task"
         };
         // Act
-        await todoService.Add(newTodoItemDto);
+        await todoService.CreateAsync(dto);
         // Assert
-        todoDbContextMock.Verify(x => x.Add(It.Is<TodoItem>(item => item.Description == "New Task")), Times.Once);
+        todoDbContextMock.Verify(x => x.AddAsync(It.Is<TodoItem>(item => item.Description == "New Task")), Times.Once);
         todoDbContextMock.Verify(x => x.SaveChangesAsync(), Times.Once);
     }
 }

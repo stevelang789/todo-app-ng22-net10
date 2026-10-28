@@ -5,6 +5,10 @@ namespace SteveLang.TodoApp.Persistence;
 
 public class TodoDbContext : DbContext
 {
+    public TodoDbContext()
+    {
+    }
+
     public TodoDbContext(DbContextOptions<TodoDbContext> options)
         : base(options)
     {
