@@ -5,7 +5,7 @@ import { TodoItem } from '../todoitem';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { form, FormField } from '@angular/forms/signals';
+import { form, FormField, pattern, required, requiredError, validate } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
@@ -25,7 +25,18 @@ export class TodoDetail {
     description: '',
     isCompleted: false
   });
-  todoForm = form(this.todoModel);
+  todoForm = form(this.todoModel, (schemaPath) => {
+    required(schemaPath.description, { message: 'Description is required' });
+    validate(schemaPath.description, ({ value }) => {
+      if (value().trim().length === 0) {
+        return {
+          kind: 'required',
+          message: 'Description is required'
+        }
+      }
+      return null;
+    });
+  });
   isNew = false;
 
   constructor() {
@@ -51,11 +62,16 @@ export class TodoDetail {
 
   async onSubmit(event: Event) {
     event.preventDefault();
+    console.log('Submitting form');
     if (this.todoItem) {
-      this.todoItem.description = this.todoForm.description().value();
+      this.todoItem.description = this.todoForm.description().value().trim();
       this.todoItem.isCompleted = this.todoForm.isCompleted().value();
       await this.todoService.save(this.todoItem);
       this.router.navigate(['/']);
     }
+  }
+
+  cancel() {
+    this.router.navigate(['/']);
   }
 }

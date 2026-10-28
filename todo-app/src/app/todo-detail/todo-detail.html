@@ -12,8 +12,9 @@
         <mat-checkbox id="isCompleted" [formField]="todoForm.isCompleted">Completed</mat-checkbox>
       </div>
     </mat-card-content>
-    <mat-card-actions>
-      <button matButton="tonal" type="submit">Save</button>
+    <mat-card-actions class="gap-3">
+      <button matButton="tonal" type="submit" [disabled]="!todoForm().valid()">Save</button>
+      <button matButton="tonal" type="button" (click)="cancel()">Cancel</button>
     </mat-card-actions>
   </mat-card>
 </form>
