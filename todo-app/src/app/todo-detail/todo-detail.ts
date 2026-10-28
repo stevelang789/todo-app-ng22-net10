@@ -62,7 +62,6 @@ export class TodoDetail {
 
   async onSubmit(event: Event) {
     event.preventDefault();
-    console.log('Submitting form');
     if (this.todoItem) {
       this.todoItem.description = this.todoForm.description().value().trim();
       this.todoItem.isCompleted = this.todoForm.isCompleted().value();

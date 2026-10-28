@@ -22,7 +22,6 @@ export class TodoList {
     this.todoService
     .getAll()
     .then((list) => {
-      console.log('Fetched todo list:', list);
       this.todoList = list;
       this.changeDetectorRef.markForCheck();
     });
